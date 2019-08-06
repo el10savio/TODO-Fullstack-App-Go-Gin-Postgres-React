@@ -24,7 +24,7 @@ func SetupRoutes() {
 	// Set routes for API
 	// Update to POST, UPDATE, DELETE etc
 	router.GET("/items", api.TodoItems)
-	router.GET("/item/create", api.CreateTodoItem)
+	router.GET("/item/create/:item", api.CreateTodoItem)
 	router.GET("/item/update", api.UpdateTodoItem)
 	router.GET("/item/delete", api.DeleteTodoItem)
 
