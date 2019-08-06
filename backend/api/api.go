@@ -60,22 +60,25 @@ func TodoItems(c *gin.Context) {
 		items = append(items, item)
 	}
 
-	// Return JSON objet of all rows
+	// Return JSON object of all rows
 	c.JSON(http.StatusOK, gin.H{"items": items})
 }
 
-// Create todo item
+// Create todo item and add to DB
 func CreateTodoItem(c *gin.Context) {
 	item := c.Param("item")
 
+	// Validate item
 	if len(item) == 0 {
 		c.JSON(http.StatusNotAcceptable, gin.H{"message": "please enter an item"})
 	} else {
+		// Create todo item
 		var TodoItem ListItem
 
 		TodoItem.Item = item
 		TodoItem.Done = false
 
+		// Insert item to DB
 		_, err := db.Query("INSERT INTO list(item, done) VALUES($1, $2);", TodoItem.Item, TodoItem.Done)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -83,16 +86,44 @@ func CreateTodoItem(c *gin.Context) {
 			panic(err)
 		}
 
-		c.JSON(http.StatusOK, gin.H{"message": "successfully create todo item"})
+		// log message
+		log.Println("created todo item", item)
+
+		// Return success response
+		c.JSON(http.StatusOK, gin.H{"message": "successfully create todo item", "todo": &TodoItem})
 	}
 }
 
 // Update todo item
 func UpdateTodoItem(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "update todo item"})
+	id := c.Param("id")
+	done := c.Param("done")
+
+	// Validate item and done
+	if len(id) == 0 {
+		c.JSON(http.StatusNotAcceptable, gin.H{"message": "please enter an id"})
+	} else if len(done) == 0 {
+		c.JSON(http.StatusNotAcceptable, gin.H{"message": "please enter a done state"})
+	} else {
+		// Find and update the todo item
+		_, err := db.Query("UPDATE list SET done=$1 WHERE id=$2;", done, id)
+		if err != nil {
+			fmt.Println(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
+			panic(err)
+		}
+
+		// log message
+		log.Println("updated todo item", id, done)
+
+		// Return success response
+		c.JSON(http.StatusOK, gin.H{"message": "successfully updated todo item", "todo": id})
+	}
 }
 
 // Delete todo item
 func DeleteTodoItem(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "delete todo item"})
 }
+
+// Add Filter API

@@ -25,7 +25,7 @@ func SetupRoutes() {
 	// Update to POST, UPDATE, DELETE etc
 	router.GET("/items", api.TodoItems)
 	router.GET("/item/create/:item", api.CreateTodoItem)
-	router.GET("/item/update", api.UpdateTodoItem)
+	router.GET("/item/update/:id/:done", api.UpdateTodoItem)
 	router.GET("/item/delete", api.DeleteTodoItem)
 
 	// Set up Gin Server
