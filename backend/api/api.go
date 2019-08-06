@@ -36,7 +36,6 @@ func SetupPostgres() {
 }
 
 // CRUD: Create Read Update Delete API Format
-// Add invalid output Gin responses 404, 403, etc
 
 // List all todo items
 func TodoItems(c *gin.Context) {
@@ -44,6 +43,7 @@ func TodoItems(c *gin.Context) {
 	rows, err := db.Query("SELECT * FROM list")
 	if err != nil {
 		fmt.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
 		panic(err)
 	}
 
@@ -55,7 +55,9 @@ func TodoItems(c *gin.Context) {
 		// Individual row processing
 		item := ListItem{}
 		if err := rows.Scan(&item.Id, &item.Item, &item.Done); err != nil {
-			log.Fatal(err)
+			fmt.Println(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
+			panic(err)
 		}
 		items = append(items, item)
 	}
