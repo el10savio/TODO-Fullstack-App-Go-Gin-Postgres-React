@@ -11,9 +11,9 @@ import (
 )
 
 type ListItem struct {
-	Id   string
-	Item string
-	Done bool
+	Id   string `json:"id"`
+	Item string `json:"item"`
+	Done bool   `json:"done"`
 }
 
 var db *sql.DB
