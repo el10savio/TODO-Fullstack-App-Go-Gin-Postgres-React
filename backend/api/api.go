@@ -86,7 +86,7 @@ func CreateTodoItem(c *gin.Context) {
 			panic(err)
 		}
 
-		// log message
+		// Log message
 		log.Println("created todo item", item)
 
 		// Return success response
@@ -99,7 +99,7 @@ func UpdateTodoItem(c *gin.Context) {
 	id := c.Param("id")
 	done := c.Param("done")
 
-	// Validate item and done
+	// Validate id and done
 	if len(id) == 0 {
 		c.JSON(http.StatusNotAcceptable, gin.H{"message": "please enter an id"})
 	} else if len(done) == 0 {
@@ -113,7 +113,7 @@ func UpdateTodoItem(c *gin.Context) {
 			panic(err)
 		}
 
-		// log message
+		// Log message
 		log.Println("updated todo item", id, done)
 
 		// Return success response
@@ -123,7 +123,26 @@ func UpdateTodoItem(c *gin.Context) {
 
 // Delete todo item
 func DeleteTodoItem(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "delete todo item"})
+	id := c.Param("id")
+
+	// Validate id
+	if len(id) == 0 {
+		c.JSON(http.StatusNotAcceptable, gin.H{"message": "please enter an id"})
+	} else {
+		// Find and delete the todo item
+		_, err := db.Query("DELETE FROM list WHERE id=$1;", id)
+		if err != nil {
+			fmt.Println(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
+			panic(err)
+		}
+
+		// Log message
+		log.Println("deleted todo item", id)
+
+		// Return success response
+		c.JSON(http.StatusOK, gin.H{"message": "successfully deleted todo item", "todo": id})
+	}
 }
 
 // Add Filter API
