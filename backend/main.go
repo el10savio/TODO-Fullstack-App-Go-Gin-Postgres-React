@@ -14,8 +14,7 @@ func indexView(c *gin.Context) {
 }
 
 // Setup Gin Routes
-func setupRoutes() {
-
+func SetupRoutes() {
 	// Use Gin as router
 	router := gin.Default()
 
@@ -31,10 +30,10 @@ func setupRoutes() {
 
 	// Set up Gin Server
 	router.Run(":8081")
-
 }
 
 // Main function
 func main() {
-	setupRoutes()
+	api.SetupPostgres()
+	SetupRoutes()
 }
