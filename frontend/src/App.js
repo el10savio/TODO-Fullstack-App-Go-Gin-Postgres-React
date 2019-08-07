@@ -1,5 +1,9 @@
 import React from 'react';
 
+import Header  from "./components/header";
+import AddBar  from "./components/addbar";
+import TodoList  from "./components/todolist";
+
 function App() {
   return (
     <div className="App">
