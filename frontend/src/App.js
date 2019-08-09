@@ -1,15 +1,17 @@
-import React from 'react';
+import React from "react";
 
-import Header  from "./components/header";
-import AddBar  from "./components/addbar";
-import TodoList  from "./components/todolist";
+import Header from "./components/header";
+import AddBar from "./components/addbar";
+import TodoList from "./components/todolist";
+
+import "./App.css";
 
 function App() {
   return (
     <div className="App">
-      <Header/>
-      <AddBar/>
-      <TodoList/>
+      <Header />
+      <AddBar />
+      <TodoList />
     </div>
   );
 }
