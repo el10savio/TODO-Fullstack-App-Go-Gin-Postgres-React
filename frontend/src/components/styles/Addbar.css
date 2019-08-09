@@ -1,8 +1,26 @@
 .AddBar {
     width: 100%;
-    height: 10%;
+    height: 20%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.AddBar-Text {
+    width: 60%;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.AddBar-Button {
+    width: 20%;
+    height: 50%;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
 }
