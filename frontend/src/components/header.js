@@ -1,8 +1,10 @@
 import React from "react";
 import "./styles/Header.css";
 
-function Header() {
-  return <div className="Header"> TODO List </div>;
+class Header extends React.Component {
+  render() {
+    return <div className="Header"> TODO List </div>;
+  }
 }
 
 export default Header;
