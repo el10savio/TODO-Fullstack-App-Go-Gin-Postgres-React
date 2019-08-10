@@ -1,8 +1,30 @@
 .TodoList {
     width: 100%;
-    height: 80%;
+    /* height: 80%; */
+    display: block;
+    overflow: auto;
+    padding: 2%;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+}
+
+.List {
+    width: 80%;
+    padding: 1% 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ListItem {
+    width: 100%;
+    padding: 0.5%;
+    margin: 0.5%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
 }
