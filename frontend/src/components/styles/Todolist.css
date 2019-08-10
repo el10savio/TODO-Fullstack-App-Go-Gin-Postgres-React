@@ -3,7 +3,7 @@
     /* height: 80%; */
     display: block;
     overflow: auto;
-    padding: 2%;
+    padding: 2% 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,10 +21,26 @@
 
 .ListItem {
     width: 100%;
-    padding: 0.5%;
+    padding: 1%;
     margin: 0.5%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    background-color: #fafafa;
+    border-radius: 4px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.ListItem:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.Status {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.Status:hover {
+    cursor: pointer;
+    transform: scale(1.05);
 }
