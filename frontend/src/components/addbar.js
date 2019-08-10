@@ -4,8 +4,12 @@ import "./styles/Addbar.css";
 function AddBar() {
   return (
     <div className="AddBar">
-      <div className="AddBar-Text">AddBar Text</div>
-      <div className="AddBar-Button">AddBar Button</div>
+      <input
+        className="AddBar-Text"
+        type="text"
+        placeholder="Enter TODO Item"
+      />
+      <div className="AddBar-Button">Add Item</div>
     </div>
   );
 }
