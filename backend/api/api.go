@@ -63,6 +63,8 @@ func TodoItems(c *gin.Context) {
 	}
 
 	// Return JSON object of all rows
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
 	c.JSON(http.StatusOK, gin.H{"items": items})
 }
 
@@ -92,6 +94,8 @@ func CreateTodoItem(c *gin.Context) {
 		log.Println("created todo item", item)
 
 		// Return success response
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
 		c.JSON(http.StatusOK, gin.H{"message": "successfully create todo item", "todo": &TodoItem})
 	}
 }
@@ -119,6 +123,8 @@ func UpdateTodoItem(c *gin.Context) {
 		log.Println("updated todo item", id, done)
 
 		// Return success response
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
 		c.JSON(http.StatusOK, gin.H{"message": "successfully updated todo item", "todo": id})
 	}
 }
@@ -143,6 +149,8 @@ func DeleteTodoItem(c *gin.Context) {
 		log.Println("deleted todo item", id)
 
 		// Return success response
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
 		c.JSON(http.StatusOK, gin.H{"message": "successfully deleted todo item", "todo": id})
 	}
 }
