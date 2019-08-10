@@ -9,29 +9,26 @@ class Todolist extends React.Component {
     };
   }
 
+  createItem(item) {
+    return (
+      <div className="ListItem" key={item.id} id={item.id}>
+        <div className="Title">{item.item}</div>
+        <div className="Status">{item.done && "Done"}</div>
+      </div>
+    );
+  }
+
   componentDidMount() {
     fetch("http://localhost:8081/items")
       .then(res => res.json())
-      .then(json => console.log(json));
+      .then(json => this.setState({ items: json.items }));
   }
 
   render() {
+    var items = this.state.items;
     return (
       <div className="TodoList">
-        <div className="List">
-          <div className="ListItem">
-            <div className="Title">Title</div>
-            <div className="Status">Status</div>
-          </div>
-          <div className="ListItem">
-            <div className="Title">Title</div>
-            <div className="Status">Status</div>
-          </div>
-          <div className="ListItem">
-            <div className="Title">Title</div>
-            <div className="Status">Status</div>
-          </div>
-        </div>
+        <div className="List">{items.map(item => this.createItem(item))}</div>
       </div>
     );
   }
