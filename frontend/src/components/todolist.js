@@ -17,6 +17,24 @@ class Todolist extends React.Component {
     );
   }
 
+  toggleDone(id) {
+    let items = [...this.state.items];
+    let item = items.find(item => item.id === id);
+    item.done = !item.done;
+
+    fetch(`http://localhost:8081/item/update/${id}/${item.done}`).then(
+      this.setState({ items })
+    );
+  }
+
+  isDone(done) {
+    if (done) {
+      return "Done";
+    } else {
+      return "Not Done";
+    }
+  }
+
   createItem(item) {
     return (
       <div className="ListItem" key={item.id} id={item.id}>
@@ -26,7 +44,9 @@ class Todolist extends React.Component {
           </div>
           {item.item}
         </div>
-        <div className="Status">{item.done && "Done"}</div>
+        <div className="Status" onClick={() => this.toggleDone(item.id)}>
+          {this.isDone(item.done)}
+        </div>
       </div>
     );
   }
