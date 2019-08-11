@@ -5,11 +5,14 @@ import (
 
 	api "./api"
 
+	"github.com/gin-gonic/contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 // Function called for index
 func indexView(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
 	c.JSON(http.StatusOK, gin.H{"message": "TODO APP"})
 }
 
@@ -17,6 +20,9 @@ func indexView(c *gin.Context) {
 func SetupRoutes() {
 	// Use Gin as router
 	router := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	router.Use(cors.New(config))
 
 	// Set route for index
 	router.GET("/", indexView)
@@ -26,7 +32,7 @@ func SetupRoutes() {
 	router.GET("/items", api.TodoItems)
 	router.GET("/item/create/:item", api.CreateTodoItem)
 	router.GET("/item/update/:id/:done", api.UpdateTodoItem)
-	router.DELETE("/item/delete/:id", api.DeleteTodoItem)
+	router.GET("/item/delete/:id", api.DeleteTodoItem)
 
 	// Set up Gin Server
 	router.Run(":8081")

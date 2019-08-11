@@ -9,10 +9,23 @@ class Todolist extends React.Component {
     };
   }
 
+  removeItem(id) {
+    fetch(`http://localhost:8081/item/delete/${id}`).then(
+      this.setState({
+        items: this.state.items.filter(item => item.id !== id),
+      })
+    );
+  }
+
   createItem(item) {
     return (
       <div className="ListItem" key={item.id} id={item.id}>
-        <div className="Title">{item.item}</div>
+        <div className="Title">
+          <div className="RemoveItem" onClick={() => this.removeItem(item.id)}>
+            X
+          </div>
+          {item.item}
+        </div>
         <div className="Status">{item.done && "Done"}</div>
       </div>
     );
