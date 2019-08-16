@@ -19,6 +19,8 @@ type ListItem struct {
 var db *sql.DB
 var err error
 
+// Add Test File
+
 func SetupPostgres() {
 	db, err = sql.Open("postgres", "postgres://postgres:password@localhost/todo?sslmode=disable")
 
