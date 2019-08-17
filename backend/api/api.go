@@ -20,19 +20,18 @@ type ListItem struct {
 var db *sql.DB
 var err error
 
-// Add Test File
-
 func SetupPostgres() {
 	db, err = sql.Open("postgres", "postgres://postgres:password@postgres/todo?sslmode=disable")
 
+	// when running locally
+	// db, err = sql.Open("postgres", "postgres://postgres:password@localhost/todo?sslmode=disable")
+
 	if err != nil {
 		fmt.Println(err.Error())
-
 	}
 
 	if err = db.Ping(); err != nil {
 		fmt.Println(err.Error())
-
 	}
 
 	log.Println("connected to postgres")
@@ -47,7 +46,6 @@ func TodoItems(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
-
 	}
 
 	defer rows.Close()
@@ -60,7 +58,6 @@ func TodoItems(c *gin.Context) {
 		if err := rows.Scan(&item.Id, &item.Item, &item.Done); err != nil {
 			fmt.Println(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
-
 		}
 		item.Item = strings.TrimSpace(item.Item)
 		items = append(items, item)
