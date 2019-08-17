@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -19,17 +20,19 @@ type ListItem struct {
 var db *sql.DB
 var err error
 
+// Add Test File
+
 func SetupPostgres() {
 	db, err = sql.Open("postgres", "postgres://postgres:password@localhost/todo?sslmode=disable")
 
 	if err != nil {
 		fmt.Println(err.Error())
-		panic(err)
+
 	}
 
 	if err = db.Ping(); err != nil {
 		fmt.Println(err.Error())
-		panic(err)
+
 	}
 
 	log.Println("connected to postgres")
@@ -44,7 +47,7 @@ func TodoItems(c *gin.Context) {
 	if err != nil {
 		fmt.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
-		panic(err)
+
 	}
 
 	defer rows.Close()
@@ -57,8 +60,9 @@ func TodoItems(c *gin.Context) {
 		if err := rows.Scan(&item.Id, &item.Item, &item.Done); err != nil {
 			fmt.Println(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
-			panic(err)
+
 		}
+		item.Item = strings.TrimSpace(item.Item)
 		items = append(items, item)
 	}
 
@@ -87,7 +91,7 @@ func CreateTodoItem(c *gin.Context) {
 		if err != nil {
 			fmt.Println(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
-			panic(err)
+
 		}
 
 		// Log message
@@ -96,7 +100,7 @@ func CreateTodoItem(c *gin.Context) {
 		// Return success response
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
-		c.JSON(http.StatusOK, gin.H{"message": "successfully create todo item", "todo": &TodoItem})
+		c.JSON(http.StatusOK, gin.H{"items": &TodoItem})
 	}
 }
 
@@ -112,20 +116,26 @@ func UpdateTodoItem(c *gin.Context) {
 		c.JSON(http.StatusNotAcceptable, gin.H{"message": "please enter a done state"})
 	} else {
 		// Find and update the todo item
-		_, err := db.Query("UPDATE list SET done=$1 WHERE id=$2;", done, id)
-		if err != nil {
+		var exists bool
+		err := db.QueryRow("SELECT * FROM list WHERE id=$1;", id).Scan(&exists)
+		if err != nil && err == sql.ErrNoRows {
 			fmt.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
-			panic(err)
+			c.JSON(http.StatusNotFound, gin.H{"message": "not found"})
+		} else {
+			_, err := db.Query("UPDATE list SET done=$1 WHERE id=$2;", done, id)
+			if err != nil {
+				fmt.Println(err.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
+			}
+
+			// Log message
+			log.Println("updated todo item", id, done)
+
+			// Return success response
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+			c.JSON(http.StatusOK, gin.H{"message": "successfully updated todo item", "todo": id})
 		}
-
-		// Log message
-		log.Println("updated todo item", id, done)
-
-		// Return success response
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
-		c.JSON(http.StatusOK, gin.H{"message": "successfully updated todo item", "todo": id})
 	}
 }
 
@@ -138,20 +148,26 @@ func DeleteTodoItem(c *gin.Context) {
 		c.JSON(http.StatusNotAcceptable, gin.H{"message": "please enter an id"})
 	} else {
 		// Find and delete the todo item
-		_, err := db.Query("DELETE FROM list WHERE id=$1;", id)
-		if err != nil {
+		var exists bool
+		err := db.QueryRow("SELECT * FROM list WHERE id=$1;", id).Scan(&exists)
+		if err != nil && err == sql.ErrNoRows {
 			fmt.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
-			panic(err)
+			c.JSON(http.StatusNotFound, gin.H{"message": "not found"})
+		} else {
+			_, err = db.Query("DELETE FROM list WHERE id=$1;", id)
+			if err != nil {
+				fmt.Println(err.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
+			}
+
+			// Log message
+			log.Println("deleted todo item", id)
+
+			// Return success response
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
+			c.JSON(http.StatusOK, gin.H{"message": "successfully deleted todo item", "todo": id})
 		}
-
-		// Log message
-		log.Println("deleted todo item", id)
-
-		// Return success response
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
-		c.JSON(http.StatusOK, gin.H{"message": "successfully deleted todo item", "todo": id})
 	}
 }
 

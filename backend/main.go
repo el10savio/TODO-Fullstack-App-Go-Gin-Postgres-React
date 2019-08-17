@@ -17,7 +17,7 @@ func indexView(c *gin.Context) {
 }
 
 // Setup Gin Routes
-func SetupRoutes() {
+func SetupRoutes() *gin.Engine {
 	// Use Gin as router
 	router := gin.Default()
 	config := cors.DefaultConfig()
@@ -35,11 +35,12 @@ func SetupRoutes() {
 	router.GET("/item/delete/:id", api.DeleteTodoItem)
 
 	// Set up Gin Server
-	router.Run(":8081")
+	return router
 }
 
 // Main function
 func main() {
 	api.SetupPostgres()
-	SetupRoutes()
+	router := SetupRoutes()
+	router.Run(":8081")
 }
