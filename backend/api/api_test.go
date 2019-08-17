@@ -1,26 +1,71 @@
 package api
 
 import (
-	"database/sql"
-	"fmt"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"testing"
+
+	"github.com/gin-gonic/contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/stretchr/testify/assert"
 )
 
-var db_test *sql.DB
-var err_test error
+var router *gin.Engine
 
-func TestMain(m *testing.M) {
+func emptyTable() {
+	db.Exec("DELETE from list")
+}
 
-	db_test, err_test = sql.Open("postgres", "postgres://postgres:password@localhost/todo?sslmode=disable")
+// Setup Gin Routes
+func SetupRoutes() *gin.Engine {
+	// Use Gin as router
+	router := gin.Default()
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	router.Use(cors.New(config))
 
-	if err_test != nil {
-		fmt.Println(err_test.Error())
-		panic(err_test)
+	// Set routes for API
+	router.GET("/items", TodoItems)
+	router.GET("/item/create/:item", CreateTodoItem)
+	router.GET("/item/update/:id/:done", UpdateTodoItem)
+	router.GET("/item/delete/:id", DeleteTodoItem)
+
+	// Set up Gin Server
+	return router
+}
+
+func performRequest(r http.Handler, method, path string) *httptest.ResponseRecorder {
+	req, _ := http.NewRequest(method, path, nil)
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+	return w
+}
+
+func TestMain(t *testing.T) {
+	SetupPostgres()
+	router = SetupRoutes()
+}
+
+// Test for successfull GET
+// response from /items
+// with no elements
+func TestItemsGet(t *testing.T) {
+	emptyTable()
+
+	// Expected body
+	body := gin.H{
+		"items": []ListItem{},
 	}
 
-	if err_test = db_test.Ping(); err_test != nil {
-		fmt.Println(err_test.Error())
-		panic(err_test)
-	}
+	w := performRequest(router, "GET", "/items")
+	assert.Equal(t, http.StatusOK, w.Code)
 
+	var response map[string][]ListItem
+	err := json.Unmarshal([]byte(w.Body.String()), &response)
+	value, exists := response["items"]
+
+	assert.Nil(t, err)
+	assert.True(t, exists)
+	assert.Equal(t, body["items"], value)
 }
