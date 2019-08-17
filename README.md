@@ -11,6 +11,12 @@ This fullstack application creates a TODO List Web Page using the Go/Gin/Postgre
 2. Start the go server in backend using go run backend/main.go.
 3. Start the react server in frontend using npm install and then npm start.
 
+OR 
+
+In the project root, run: 
+1. docker-compose build 
+2. docker-compose run
+
 ## Go server
 
 Go is used to spin up the server, define routing, and interact with the database.
