@@ -1,0 +1,22 @@
+version: "3"
+services:
+  postgres:
+    build: ./database
+    environment:
+      POSTGRES_DB: todo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432
+  go-api:
+    build: ./backend
+    ports:
+      - 8081:8081
+    depends_on:
+      - postgres
+    links:
+      - postgres
+  react-app:
+    build: ./frontend
+    ports:
+      - 3000:3000
