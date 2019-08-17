@@ -120,8 +120,9 @@ func TestItemCreate(t *testing.T) {
 	assert.Equal(t, body["items"], value)
 }
 
-// Test for successfull delete
-// response from /item/delete
+// Test for successfull creates
+// response for multiple items
+// from /item/create
 func TestItemsCreate(t *testing.T) {
 	emptyTable()
 
@@ -145,6 +146,77 @@ func TestItemsCreate(t *testing.T) {
 	assert.Equal(t, http.StatusOK, w1.Code)
 
 	w2 := performRequest(router, "GET", "/item/create/Test-DB")
+	assert.Equal(t, http.StatusOK, w2.Code)
+
+	w3 := performRequest(router, "GET", "/items")
+	assert.Equal(t, http.StatusOK, w3.Code)
+
+	var response map[string][]ListItem
+	err := json.Unmarshal([]byte(w3.Body.String()), &response)
+	value, exists := response["items"]
+
+	assert.Nil(t, err)
+	assert.True(t, exists)
+	assert.Equal(t, body["items"], value)
+}
+
+// Test for successfull delete
+// from /item/delete
+func TestItemDelete(t *testing.T) {
+	emptyTable()
+
+	// Expected body
+	body := gin.H{
+		"items": []ListItem{
+			{
+				Id:   "2",
+				Item: "Test-DB",
+				Done: false,
+			},
+		},
+	}
+
+	w1 := performRequest(router, "GET", "/item/create/Test-API")
+	assert.Equal(t, http.StatusOK, w1.Code)
+
+	w2 := performRequest(router, "GET", "/item/create/Test-DB")
+	assert.Equal(t, http.StatusOK, w2.Code)
+
+	w3 := performRequest(router, "GET", "/item/delete/1")
+	assert.Equal(t, http.StatusOK, w3.Code)
+
+	w4 := performRequest(router, "GET", "/items")
+	assert.Equal(t, http.StatusOK, w4.Code)
+
+	var response map[string][]ListItem
+	err := json.Unmarshal([]byte(w4.Body.String()), &response)
+	value, exists := response["items"]
+
+	assert.Nil(t, err)
+	assert.True(t, exists)
+	assert.Equal(t, body["items"], value)
+}
+
+// Test for successfull update
+// from /item/update
+func TestItemUpdate(t *testing.T) {
+	emptyTable()
+
+	// Expected body
+	body := gin.H{
+		"items": []ListItem{
+			{
+				Id:   "1",
+				Item: "Test-API",
+				Done: true,
+			},
+		},
+	}
+
+	w1 := performRequest(router, "GET", "/item/create/Test-API")
+	assert.Equal(t, http.StatusOK, w1.Code)
+
+	w2 := performRequest(router, "GET", "/item/update/1/true")
 	assert.Equal(t, http.StatusOK, w2.Code)
 
 	w3 := performRequest(router, "GET", "/items")
