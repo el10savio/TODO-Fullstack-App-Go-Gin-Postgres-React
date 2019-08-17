@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
@@ -61,6 +62,7 @@ func TodoItems(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
 			panic(err)
 		}
+		item.Item = strings.TrimSpace(item.Item)
 		items = append(items, item)
 	}
 
@@ -98,7 +100,7 @@ func CreateTodoItem(c *gin.Context) {
 		// Return success response
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
-		c.JSON(http.StatusOK, gin.H{"message": "successfully create todo item", "todo": &TodoItem})
+		c.JSON(http.StatusOK, gin.H{"items": &TodoItem})
 	}
 }
 
