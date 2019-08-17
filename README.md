@@ -1,4 +1,5 @@
 # TODO-Fullstack-App-Go-Gin-Postgres-React
+![Test Coverage](backend/api/coverage_badge.png)
 
 This fullstack application creates a TODO List Web Page using the Go/Gin/Postgres/React Stack.
 
