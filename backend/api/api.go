@@ -21,10 +21,10 @@ var db *sql.DB
 var err error
 
 func SetupPostgres() {
-	db, err = sql.Open("postgres", "postgres://postgres:password@postgres/todo?sslmode=disable")
+	// db, err = sql.Open("postgres", "postgres://postgres:password@postgres/todo?sslmode=disable")
 
 	// when running locally
-	// db, err = sql.Open("postgres", "postgres://postgres:password@localhost/todo?sslmode=disable")
+	db, err = sql.Open("postgres", "postgres://postgres:password@localhost/todo?sslmode=disable")
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -97,7 +97,7 @@ func CreateTodoItem(c *gin.Context) {
 		// Return success response
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
-		c.JSON(http.StatusOK, gin.H{"items": &TodoItem})
+		c.JSON(http.StatusCreated, gin.H{"items": &TodoItem})
 	}
 }
 

@@ -129,7 +129,7 @@ func TestItemCreate(t *testing.T) {
 
 	// /item/create GET request and check 200 OK status code
 	w := performRequest(router, "GET", "/item/create/Test-API")
-	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, http.StatusCreated, w.Code)
 
 	// Obtain response
 	var response map[string]ListItem
@@ -172,11 +172,11 @@ func TestItemsCreate(t *testing.T) {
 
 	// /item/create GET request and check 200 OK status code
 	w1 := performRequest(router, "GET", "/item/create/Test-API")
-	assert.Equal(t, http.StatusOK, w1.Code)
+	assert.Equal(t, http.StatusCreated, w1.Code)
 
 	// /item/create GET request and check 200 OK status code
 	w2 := performRequest(router, "GET", "/item/create/Test-DB")
-	assert.Equal(t, http.StatusOK, w2.Code)
+	assert.Equal(t, http.StatusCreated, w2.Code)
 
 	// /items GET request and check 200 OK status code
 	w3 := performRequest(router, "GET", "/items")
@@ -217,11 +217,11 @@ func TestItemDelete(t *testing.T) {
 
 	// /item/create GET request and check 200 OK status code
 	w1 := performRequest(router, "GET", "/item/create/Test-API")
-	assert.Equal(t, http.StatusOK, w1.Code)
+	assert.Equal(t, http.StatusCreated, w1.Code)
 
 	// /item/create GET request and check 200 OK status code
 	w2 := performRequest(router, "GET", "/item/create/Test-DB")
-	assert.Equal(t, http.StatusOK, w2.Code)
+	assert.Equal(t, http.StatusCreated, w2.Code)
 
 	// /item/delete GET request and check 200 OK status code
 	w3 := performRequest(router, "GET", "/item/delete/1")
@@ -298,7 +298,7 @@ func TestItemUpdate(t *testing.T) {
 
 	// /item/create GET request and check 200 OK status code
 	w1 := performRequest(router, "GET", "/item/create/Test-API")
-	assert.Equal(t, http.StatusOK, w1.Code)
+	assert.Equal(t, http.StatusCreated, w1.Code)
 
 	// /item/update GET request and check 200 OK status code
 	w2 := performRequest(router, "GET", "/item/update/1/true")
