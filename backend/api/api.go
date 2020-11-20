@@ -48,19 +48,21 @@ func TodoItems(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
 	}
 
-	defer rows.Close()
-
 	// Get all rows and add into items
 	items := make([]ListItem, 0)
-	for rows.Next() {
-		// Individual row processing
-		item := ListItem{}
-		if err := rows.Scan(&item.Id, &item.Item, &item.Done); err != nil {
-			fmt.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
+	
+	if rows != nil {
+		defer rows.Close()
+		for rows.Next() {
+			// Individual row processing
+			item := ListItem{}
+			if err := rows.Scan(&item.Id, &item.Item, &item.Done); err != nil {
+				fmt.Println(err.Error())
+				c.JSON(http.StatusInternalServerError, gin.H{"message": "error with DB"})
+			}
+			item.Item = strings.TrimSpace(item.Item)
+			items = append(items, item)
 		}
-		item.Item = strings.TrimSpace(item.Item)
-		items = append(items, item)
 	}
 
 	// Return JSON object of all rows

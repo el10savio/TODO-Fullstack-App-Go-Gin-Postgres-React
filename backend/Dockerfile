@@ -1,18 +1,26 @@
-FROM golang:alpine 
+FROM golang:alpine AS builder
 
-RUN apk add --update git
+RUN apk update && apk add --no-cache git 
 
-ADD . $GOPATH/src/build/
+RUN mkdir /build
 
-WORKDIR $GOPATH/src/build/
+WORKDIR /build
 
-RUN go get -u "github.com/gin-gonic/contrib/cors"
-RUN go get -u "github.com/lib/pq"
+COPY . .
 
-EXPOSE 8081
+RUN go get -d -v
 
-CMD ["wget", "https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh"]
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -installsuffix cgo -o /go/bin/build
+
+
+FROM scratch
+
+COPY --from=builder /go/bin/build /go/bin/build
+COPY --from=builder /build/wait-for-it.sh ./wait-for-it.sh
+
 CMD ["chmod", "+x", "wait-for-it.sh"]
 CMD ["./wait-for-it.sh", "db:5432", "--"]
 
-CMD ["go", "run", "main.go"]
+ENTRYPOINT ["/go/bin/build"]
+
+EXPOSE 8081
