@@ -7,15 +7,11 @@ This fullstack application creates a TODO List Web Page using the Go/Gin/Postgre
 
 ## Starting the application
 
-1. Create a Postgres Database called TODO with table list and change backend/api/api.go accordingly.
-2. Start the go server in backend using go run backend/main.go.
-3. Start the react server in frontend using npm install and then npm start.
-
-OR 
-
 In the project root, run: 
-1. docker-compose build 
-2. docker-compose run
+```
+docker-compose build 
+docker-compose up
+```
 
 ## Go server
 
